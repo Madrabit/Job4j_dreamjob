@@ -21,6 +21,12 @@ public class Post {
         created = LocalDate.now();
     }
 
+    public Post(int i, String name) {
+        this.id = i;
+        this.name = name;
+        created = LocalDate.now();
+    }
+
     public String getDescription() {
         return description;
     }

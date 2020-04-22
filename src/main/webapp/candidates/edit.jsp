@@ -31,7 +31,9 @@
                 <form>
                     <div class="form-group">
                         <label>Имя</label>
-                        <input type="text" class="form-control">
+                        <label>
+                            <input type="text" class="form-control">
+                        </label>
                     </div>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
