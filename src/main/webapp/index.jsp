@@ -31,10 +31,10 @@
                 <a class="nav-link" href="<%=request.getContextPath()%>/candidates.jsp">Кандидаты</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/posts/edit.jsp">Создание вакансии</a>
+                <a class="nav-link" href="<%=request.getContextPath()%>/post/edit.jsp">Создание вакансии</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="<%=request.getContextPath()%>/candidates/edit.jsp">Создание резюме</a>
+                <a class="nav-link" href="<%=request.getContextPath()%>/candidate/edit.jsp">Создание резюме</a>
             </li>
         </ul>
     </div>
