@@ -43,7 +43,7 @@
                 <% } %>
             </div>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/candidate/save?id=<%=candid.getId()%>" method="post">
+                <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candid.getId()%>" method="post">
                     <div class="form-group">
                         <label>Имя</label>
                         <label>
