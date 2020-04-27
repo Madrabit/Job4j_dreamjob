@@ -3,6 +3,7 @@ package ru.job4j.dream.store;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,9 +27,9 @@ public class Store {
         posts.put(1, new Post(1, "Junior Java Job", "Some text 1"));
         posts.put(2, new Post(2, "Middle Java Job", "Some text 2"));
         posts.put(3, new Post(3, "Senior Java Job", "Some text 3"));
-        candidates.put(1, new Candidate(1, "Junior Java"));
-        candidates.put(2, new Candidate(2, "Middle Java"));
-        candidates.put(3, new Candidate(3, "Senior Java"));
+        candidates.put(1, new Candidate(1, "Junior Java", ""));
+        candidates.put(2, new Candidate(2, "Middle Java", ""));
+        candidates.put(3, new Candidate(3, "Senior Java", ""));
     }
 
     public static Store instOf() {
@@ -59,6 +60,15 @@ public class Store {
             candidate.setId(CANDIDATE_ID.incrementAndGet());
         }
         candidates.put(candidate.getId(), candidate);
+    }
+
+    public void deleteCandidate(String id) {
+        Candidate candidate = candidates.get(Integer.parseInt(id));
+        if (!candidate.getPhotoId().isEmpty()) {
+            File file = new File("images" + File.separator + candidate.getPhotoId());
+            file.delete();
+        }
+        candidates.remove(Integer.parseInt(id));
     }
 
     public Candidate findCandidateById(int id) {

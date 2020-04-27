@@ -27,7 +27,7 @@
 <body>
 <%
     String id = request.getParameter("id");
-    Candidate candid = new Candidate(0, "");
+    Candidate candid = new Candidate(0, "", "");
     if (id != null) {
         candid = Store.instOf().findCandidateById(Integer.parseInt(id));
     }
@@ -43,16 +43,25 @@
                 <% } %>
             </div>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candid.getId()%>" method="post">
+                <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candid.getId()%>" enctype="multipart/form-data" method="post">
                     <div class="form-group">
                         <label>Имя</label>
                         <label>
                             <input type="text" class="form-control" name="name" value="<%=candid.getName()%>">
                         </label>
+                        <div class="checkbox">
+                            <input type="file" name="photoId">
+                        </div>
                     </div>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>
+<%--            <form action="<%=request.getContextPath()%>/upload" method="post" enctype="multipart/form-data">--%>
+<%--                <div class="checkbox">--%>
+<%--                    <input type="file" name="file">--%>
+<%--                </div>--%>
+<%--                <button type="submit" class="btn btn-primary btn-sm">Submit</button>--%>
+<%--            </form>--%>
         </div>
     </div>
 </div>
