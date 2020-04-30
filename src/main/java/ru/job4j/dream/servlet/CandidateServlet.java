@@ -5,7 +5,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import ru.job4j.dream.model.Candidate;
-import ru.job4j.dream.store.Store;
+import ru.job4j.dream.store.MemStore;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -28,7 +27,7 @@ public class CandidateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        req.setAttribute("candidates", Store.instOf().findAllCandidates());
+        req.setAttribute("candidates", MemStore.instOf().findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
@@ -47,7 +46,7 @@ public class CandidateServlet extends HttpServlet {
         factory.setRepository(repository);
         ServletFileUpload upload = new ServletFileUpload(factory);
         upload.setHeaderEncoding("UTF-8");
-        File file = null;
+        File file;
         String name = "";
         String photoId = "";
         try {
@@ -74,7 +73,7 @@ public class CandidateServlet extends HttpServlet {
         } catch (FileUploadException e) {
             e.printStackTrace();
         }
-        Store.instOf().saveCandidate(
+        MemStore.instOf().saveCandidate(
                 new Candidate(
                         Integer.parseInt(req.getParameter("id")),
                         name,
