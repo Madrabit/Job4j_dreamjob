@@ -210,4 +210,9 @@ public class PsqlStore implements Store {
         }
         return post;
     }
+
+    @Override
+    public void deleteCandidate(String id) {
+
+    }
 }

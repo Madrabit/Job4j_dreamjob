@@ -22,4 +22,6 @@ public interface Store {
     Candidate findCandidateById(int id);
 
     Post findPostById(int id);
+
+    void deleteCandidate(String id);
 }
