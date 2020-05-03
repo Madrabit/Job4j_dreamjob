@@ -2,6 +2,7 @@ package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 import java.io.File;
 import java.util.Collection;
@@ -74,6 +75,16 @@ public class MemStore implements Store {
             file.delete();
         }
         candidates.remove(Integer.parseInt(id));
+    }
+
+    @Override
+    public void addUser(User user) {
+
+    }
+
+    @Override
+    public User findByEmail(String name) {
+        return null;
     }
 
     @Override

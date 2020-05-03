@@ -11,6 +11,7 @@ import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.job4j.dream.model.User;
 
 /**
  * @author madrabit on 30.04.2020
@@ -47,8 +48,10 @@ public class PsqlStore implements Store {
              Statement st = Objects.requireNonNull(connect).createStatement()) {
             st.execute("DROP TABLE IF EXISTS post; ");
             st.execute("DROP TABLE IF EXISTS candidates;");
+//            st.execute("DROP TABLE IF EXISTS registered_users;");
             st.executeUpdate("CREATE TABLE post (id SERIAL PRIMARY KEY, name TEXT); ");
             st.executeUpdate("CREATE TABLE candidates (id SERIAL PRIMARY KEY, name TEXT, photoId TEXT);");
+//            st.executeUpdate("CREATE TABLE registered_users (id SERIAL PRIMARY KEY, name TEXT, email TEXT, password TEXT);");
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -75,7 +78,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return posts;
     }
@@ -92,7 +95,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return candidates;
     }
@@ -128,7 +131,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -144,7 +147,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -157,7 +160,6 @@ public class PsqlStore implements Store {
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
-
     }
 
     private void updateCandidate(Candidate candidate) {
@@ -187,7 +189,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return candidate;
     }
@@ -206,7 +208,7 @@ public class PsqlStore implements Store {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return post;
     }
@@ -214,5 +216,45 @@ public class PsqlStore implements Store {
     @Override
     public void deleteCandidate(String id) {
 
+    }
+
+    @Override
+    public void addUser(User user) {
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("INSERT INTO registered_users(name, email, password) VALUES (?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)
+        ) {
+            ps.setString(1, user.getName());
+            ps.setString(2, user.getEmail());
+            ps.setString(3, user.getPassword());
+            ps.execute();
+            try (ResultSet id = ps.getGeneratedKeys()) {
+                if (id.next()) {
+                    user.setId(id.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User user = new User(0, "", "", "");
+        try (Connection cn = pool.getConnection();
+             PreparedStatement st = cn.prepareStatement("SELECT * FROM registered_users WHERE email = ?")
+        ) {
+            st.setString(1, email);
+            try (ResultSet it = st.executeQuery()) {
+                while (it.next()) {
+                    user.setId(it.getInt("id"));
+                    user.setName(it.getString("name"));
+                    user.setEmail(it.getString("email"));
+                    user.setPassword(it.getString("password"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return user;
     }
 }

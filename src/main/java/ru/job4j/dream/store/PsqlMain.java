@@ -2,6 +2,7 @@ package ru.job4j.dream.store;
 
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
+import ru.job4j.dream.model.User;
 
 /**
  * @author madrabit on 30.04.2020
@@ -22,5 +23,8 @@ public class PsqlMain {
         for (Candidate can : store.findAllCandidates()) {
             System.out.println(can.getId() + " " + can.getName() + " " + can.getPhotoId());
         }
+        store.addUser(new User(1, "Vova", "aqw@123", "123123"));
+        User user = store.findByEmail("aqw@123");
+        System.out.println(String.format("%s %s %s %s", user.getId(), user.getName(), user.getEmail(), user.getPassword()));
     }
 }
