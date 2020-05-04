@@ -24,7 +24,7 @@ public class MemStore implements Store {
     private final Map<Integer, Post> posts = new ConcurrentHashMap<>();
     private final Map<Integer, Candidate> candidates = new ConcurrentHashMap<>();
 
-    private MemStore() {
+    public MemStore() {
 //        posts.put(1, new Post(1, "Junior Java Job", "Some text 1"));
 //        posts.put(2, new Post(2, "Middle Java Job", "Some text 2"));
 //        posts.put(3, new Post(3, "Senior Java Job", "Some text 3"));
@@ -43,7 +43,7 @@ public class MemStore implements Store {
     }
 
     @Override
-    public Collection<Candidate> findAllCandidates() {
+    public Collection <Candidate> findAllCandidates() {
         return candidates.values();
     }
 
