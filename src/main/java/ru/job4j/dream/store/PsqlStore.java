@@ -5,6 +5,7 @@ import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.sql.*;
 import java.util.*;
@@ -44,16 +45,21 @@ public class PsqlStore implements Store {
         pool.setMinIdle(5);
         pool.setMaxIdle(10);
         pool.setMaxOpenPreparedStatements(100);
-        try (Connection connect = pool.getConnection();
-             Statement st = Objects.requireNonNull(connect).createStatement()) {
-            st.execute("DROP TABLE IF EXISTS post; ");
-            st.execute("DROP TABLE IF EXISTS candidates;");
-//            st.execute("DROP TABLE IF EXISTS registered_users;");
-            st.executeUpdate("CREATE TABLE post (id SERIAL PRIMARY KEY, name TEXT); ");
-            st.executeUpdate("CREATE TABLE candidates (id SERIAL PRIMARY KEY, name TEXT, photoId TEXT);");
-//            st.executeUpdate("CREATE TABLE registered_users (id SERIAL PRIMARY KEY, name TEXT, email TEXT, password TEXT);");
-        } catch (SQLException e) {
-            LOG.error(e.getMessage(), e);
+        createTables();
+    }
+
+    private void createTables() {
+        try (BufferedReader br = new BufferedReader(
+                new FileReader("db" + File.separator + "schema.sql"))) {
+            String line;
+            try (Connection cn = pool.getConnection();
+                 Statement st = cn.createStatement()) {
+                while ((line = br.readLine()) != null) {
+                    st.execute(line);
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
         }
     }
 
