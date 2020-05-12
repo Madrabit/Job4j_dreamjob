@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +47,7 @@ public class PsqlStoreTest {
         when(req.getParameter("id")).thenReturn("0");
         when(req.getParameter("name")).thenReturn("Vasya");
         new PostServlet().doPost(req, resp);
-        List<Post> postList = PsqlStore.instOf().findAllPosts().stream().collect(Collectors.toList());
+        List<Post> postList = new ArrayList<>(PsqlStore.instOf().findAllPosts());
         assertThat(postList.get(0).getName(), is("Vasya"));
         assertThat(PsqlStore.instOf().findPostById(0).getName(), is("Vasya"));
     }

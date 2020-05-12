@@ -76,7 +76,17 @@
       <artifactId>powermock-module-junit4</artifactId>
       <version>2.0.0-beta.5</version>
     </dependency>
-
+    <!-- https://mvnrepository.com/artifact/org.json/json -->
+    <dependency>
+      <groupId>org.json</groupId>
+      <artifactId>json</artifactId>
+      <version>20190722</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>${gson.version}</version>
+    </dependency>
   </dependencies>
 
 </project>

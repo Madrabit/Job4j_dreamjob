@@ -13,22 +13,34 @@
     <form>
         <div class="form-group">
             <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"
+                   placeholder="Enter email">
         </div>
         <button type="button" class="btn btn-primary" id="sendEmail">Submit</button>
     </form>
 </div>
 <script>
-    function sendGreeting() {
+    function sendGreetingJson() {
         let email = document.querySelector('#exampleInputEmail1').value;
-        fetch('http://localhost:8081/dreamjob/greet?name=' + email)
-            .then(response => response.text())
+        fetch('http://localhost:8081/dreamjob/greet',
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({text: email})
+            }
+        ).then(response => response.json())
             .then(data => {
-                document.querySelector(".text").textContent = data;
-            });
+                document.querySelector(".text").textContent = data.text;
+            })
+            .catch(error => console.error(error))
     }
+
     let submitBtn = document.querySelector('#sendEmail');
-    submitBtn.addEventListener('click', sendGreeting);
+    submitBtn.addEventListener('click', sendGreetingJson);
+
 </script>
 </body>
 </html>
