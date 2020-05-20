@@ -48,6 +48,12 @@ public class CandidateServlet extends HttpServlet {
         upload.setHeaderEncoding("UTF-8");
         File file;
         String name = "";
+        String lastName = "";
+        String country = "";
+        String region = "";
+        String city = "";
+        String sex = "";
+        String description = "";
         String photoId = "";
         try {
             List<FileItem> items = upload.parseRequest(req);
@@ -55,7 +61,21 @@ public class CandidateServlet extends HttpServlet {
             for (FileItem item : items) {
                 if (item.isFormField()) {
                     if ("name".equals(item.getFieldName())) {
+                        fieldNotEmpty(item, resp);
                         name = item.getString("UTF-8");
+                    } else if ("lastName".equals(item.getFieldName())) {
+                        fieldNotEmpty(item, resp);
+                        lastName = item.getString("UTF-8");
+                    } else if ("country".equals(item.getFieldName())) {
+                        country = item.getString("UTF-8");
+                    } else if ("state".equals(item.getFieldName())) {
+                        region = item.getString("UTF-8");
+                    } else if ("district".equals(item.getFieldName())) {
+                        city = item.getString("UTF-8");
+                    } else if ("sex".equals(item.getFieldName())) {
+                        sex = item.getString("UTF-8");
+                    } else if ("description".equals(item.getFieldName())) {
+                        description = item.getString("UTF-8");
                     }
                 } else if (!item.isFormField() && item.getSize() > 0) {
                     File folder = new File("images");
@@ -77,10 +97,21 @@ public class CandidateServlet extends HttpServlet {
                 new Candidate(
                         Integer.parseInt(req.getParameter("id")),
                         name,
+                        lastName,
+                        country,
+                        region,
+                        city,
+                        sex,
+                        description,
                         photoId
                 )
         );
         doGet(req, resp);
         resp.sendRedirect(req.getContextPath() + "/candidates.do");
+    }
+
+    private void fieldNotEmpty(FileItem item, HttpServletResponse resp) throws IOException {
+        if (item == null || item.getString().isEmpty())
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
 }

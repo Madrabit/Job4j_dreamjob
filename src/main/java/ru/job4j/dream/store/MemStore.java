@@ -91,4 +91,19 @@ public class MemStore implements Store {
     public Candidate findCandidateById(int id) {
         return candidates.get(id);
     }
+
+    @Override
+    public Map<Integer, String> findAllCountries() {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findAllCitiesById(String regionId) {
+        return null;
+    }
 }

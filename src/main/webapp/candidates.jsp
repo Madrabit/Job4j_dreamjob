@@ -25,7 +25,7 @@
 </head>
 <body>
 <div class="container pt-3">
-
+    <jsp:include page="/WEB-INF/header.jsp"/>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
@@ -35,7 +35,10 @@
                 <table class="table">
                     <thead>
                     <tr>
-                        <th scope="col">Названия</th>
+                        <th scope="col">Имя</th>
+                        <th scope="col">Фамилия</th>
+                        <th scope="col">Пол</th>
+                        <th scope="col">Описание</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,6 +49,20 @@
                                     <i class="fa fa-edit mr-3"></i>
                                 </a>
                                 <c:out value="${candidate.name}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.lastName}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.sex}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.country}"/>
+                                <c:out value="${candidate.region}"/>
+                                <c:out value="${candidate.city}"/>
+                            </td>
+                            <td>
+                                <c:out value="${candidate.description}"/>
                             </td>
                             <td>
                                 <a href="${pageContext.servletContext.contextPath}/download?photoId=${candidate.photoId}">Download</a>

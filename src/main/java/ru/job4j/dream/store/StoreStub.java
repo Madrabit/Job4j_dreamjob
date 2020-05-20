@@ -18,7 +18,7 @@ public class StoreStub implements Store{
 
     private int postIds = 0;
     private int candidatesIds = 0;
-    private int usersId = 0;
+    private final int usersId = 0;
 
 
     @Override
@@ -71,6 +71,21 @@ public class StoreStub implements Store{
                 return user;
             }
         }
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findAllCountries() {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, String> findAllCitiesById(String regionId) {
         return null;
     }
 }

@@ -1,6 +1,4 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="ru.job4j.dream.store.MemStore" %>
-<%@ page import="ru.job4j.dream.model.Post" %>
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="ru.job4j.dream.store.PsqlStore" %>
 <!doctype html>
@@ -22,18 +20,19 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
             integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
             crossorigin="anonymous"></script>
-
+    <link rel="stylesheet" type="text/css" href="../style.css"/>
     <title>Работа мечты</title>
 </head>
 <body>
 <%
     String id = request.getParameter("id");
-    Candidate candid = new Candidate(0, "", "");
+    Candidate candid = new Candidate(0, "", "", "", "", "", "", "", "");
     if (id != null) {
         candid = PsqlStore.instOf().findCandidateById(Integer.parseInt(id));
     }
 %>
 <div class="container pt-3">
+    <jsp:include page="/WEB-INF/header.jsp"/>
     <div class="row">
         <div class="card" style="width: 100%">
             <div class="card-header">
@@ -44,27 +43,175 @@
                 <% } %>
             </div>
             <div class="card-body">
-                <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candid.getId()%>" enctype="multipart/form-data" method="post">
-                    <div class="form-group">
-                        <label>Имя</label>
-                        <label>
-                            <input type="text" class="form-control" name="name" value="<%=candid.getName()%>">
+                <form action="<%=request.getContextPath()%>/candidates.do?id=<%=candid.getId()%>"
+                      enctype="multipart/form-data" method="post">
+                    <div class="form-group w-25 has-error">
+                        <label for="name">Имя:</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<%=candid.getName()%>">
+                        <div class="valid-inform  hidden" id="nameInvalid">Поле заполнено неверно</div>
+                    </div>
+                    <div class="form-group w-25">
+                        <label for="lastName">Фамилия:</label>
+                        <input type="text" class="form-control" name="lastName" id="lastName"
+                               value="<%=candid.getLastName()%>">
+                        <div class="valid-inform  hidden" id="lastNameInvalid">Поле заполнено неверно</div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sex" id="male" value="Male"
+                                <% if ("Male".equals(candid.getSex()) || "".equals(candid.getSex())) { %>
+                               checked
+                        <% } else { %>
+                        <% } %>
+                        <label class="form-check-label" for="male">
+                            М
                         </label>
-                        <div class="checkbox">
-                            <input type="file" name="photoId">
-                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="sex" id="female"
+                               value="Female"
+                            <% if ("Female".equals(candid.getSex())) { %>
+                               checked
+                            <% } else { %>
+                            <% } %>
+                        >
+                        <label class="form-check-label" for="female">
+                            Ж
+                        </label>
+                    </div>
+                    Страна:
+                    <select name="country" id="countySel" size="1">
+                        <option value="" selected="selected">Выбрать страну</option>
+                    </select>
+
+                    <br>
+                    <br>
+                    Регион: <select name="state" id="stateSel" size="1">
+                    <option value="" selected="selected">Выберите сначала Страну</option>
+                </select>
+                    <br>
+                    <br>
+                    Город: <select name="district" id="districtSel" size="1">
+                    <option value="" selected="selected">Выберите сначала Регион</option>
+                </select>
+                    <div class="form-group">
+                        <label for="desc">Описание:</label>
+                        <input type="textarea" class="form-control" name="description" id="desc"
+                               value="<%=candid.getDescription()%>">
+                    </div>
+                    <div class="checkbox mb-3">
+                        <input type="file" name="photoId">
                     </div>
                     <button type="submit" class="btn btn-primary">Сохранить</button>
                 </form>
             </div>
-<%--            <form action="<%=request.getContextPath()%>/upload" method="post" enctype="multipart/form-data">--%>
-<%--                <div class="checkbox">--%>
-<%--                    <input type="file" name="file">--%>
-<%--                </div>--%>
-<%--                <button type="submit" class="btn btn-primary btn-sm">Submit</button>--%>
-<%--            </form>--%>
         </div>
     </div>
 </div>
+
+<form name="myform" id="myForm">
+</form>
+<script>
+
+    /**
+     * Form validation.
+     * @param event Submit event.
+     */
+    let validate = (event) => {
+        document.querySelectorAll('.valid-inform').forEach(el => el.classList.add('hidden'));
+        let name = document.querySelector('#name').value;
+        let lastName = document.querySelector('#lastName').value;
+        let isValid = true;
+        if (name.trim() === '') {
+            event.preventDefault()
+            isValid = false;
+            let error = document.querySelector('#nameInvalid');
+            error.classList.remove('hidden');
+        }
+        if (lastName.trim() === '') {
+            event.preventDefault()
+            isValid = false;
+            let error = document.querySelector('#lastNameInvalid');
+            error.classList.remove('hidden');
+        }
+        return isValid;
+    }
+    let form = document.querySelector('form')
+    form.addEventListener('submit', validate);
+
+
+    let countySel = document.getElementById("countySel");
+    let stateSel = document.getElementById("stateSel");
+    let districtSel = document.getElementById("districtSel");
+
+    window.onload = function () {
+
+
+        fetch('http://localhost:8081/dreamjob/cities',
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }
+        ).then(response => response.json())
+            .then(data => {
+                for (let key in data.country) {
+                    countySel.options[countySel.options.length] = new Option(data.country[key], key);
+                }
+            })
+            .catch(error => console.error(error))
+
+
+    }
+
+    countySel.onchange = function () {
+        let value = countySel.options[countySel.selectedIndex].value;
+        fetch('http://localhost:8081/dreamjob/cities',
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({country: value})
+            }
+        ).then(response => response.json())
+            .then(data => {
+                console.log(data)
+                for (let key in data.regions) {
+                    stateSel.options[stateSel.options.length] = new Option(data.regions[key], key);
+                }
+            })
+            .catch(error => console.error(error))
+        stateSel.length = 1;
+        districtSel.length = 1;
+        if (this.selectedIndex < 1) return;
+    }
+
+    stateSel.onchange = function () {
+        let countryValue = countySel.options[countySel.selectedIndex].value;
+        let stateValue = stateSel.options[stateSel.selectedIndex].value;
+        fetch('http://localhost:8081/dreamjob/cities',
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({country: countryValue, region: stateValue})
+            }
+        ).then(response => response.json())
+            .then(data => {
+                for (let key in data.cities) {
+                    districtSel.options[districtSel.options.length] = new Option(data.cities[key], key);
+                }
+            })
+            .catch(error => console.error(error))
+        districtSel.length = 1;
+        if (this.selectedIndex < 1) return;
+    }
+
+</script>
 </body>
 </html>

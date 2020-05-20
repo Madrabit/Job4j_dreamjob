@@ -5,6 +5,7 @@ import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author madrabit on 30.04.2020
@@ -30,4 +31,9 @@ public interface Store {
 
     User findByEmail(String name);
 
+    Map<Integer, String>  findAllCountries();
+
+    Map<Integer, String>  findAllRegionsByCountryId(String countryId);
+
+    Map<Integer, String> findAllCitiesById(String regionId);
 }

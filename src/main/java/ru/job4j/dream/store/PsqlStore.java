@@ -24,6 +24,7 @@ public class PsqlStore implements Store {
 
     private static final BasicDataSource pool = new BasicDataSource();
 
+
     private PsqlStore() {
         Properties cfg = new Properties();
         try (BufferedReader io = new BufferedReader(
@@ -97,7 +98,15 @@ public class PsqlStore implements Store {
         ) {
             try (ResultSet it = ps.executeQuery()) {
                 while (it.next()) {
-                    candidates.add(new Candidate(it.getInt("id"), it.getString("name"), it.getString("photoId")));
+                    candidates.add(new Candidate(it.getInt("id"),
+                            it.getString("name"),
+                            it.getString("lastName"),
+                            it.getString("country"),
+                            it.getString("region"),
+                            it.getString("city"),
+                            it.getString("sex"),
+                            it.getString("description"),
+                            it.getString("photoId")));
                 }
             }
         } catch (Exception e) {
@@ -126,10 +135,17 @@ public class PsqlStore implements Store {
 
     private void createCandidate(Candidate candidate) {
         try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("INSERT INTO candidates(name, photoId) VALUES (?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)
+             PreparedStatement ps = cn.prepareStatement("INSERT INTO candidates(name, lastName, country, region, city, sex, description, photoId) "
+                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS)
         ) {
             ps.setString(1, candidate.getName());
-            ps.setString(2, candidate.getPhotoId());
+            ps.setString(2, candidate.getLastName());
+            ps.setString(3, candidate.getCountry());
+            ps.setString(4, candidate.getRegion());
+            ps.setString(5, candidate.getCity());
+            ps.setString(6, candidate.getSex());
+            ps.setString(7, candidate.getDescription());
+            ps.setString(8, candidate.getPhotoId());
             ps.execute();
             try (ResultSet id = ps.getGeneratedKeys()) {
                 if (id.next()) {
@@ -170,11 +186,18 @@ public class PsqlStore implements Store {
 
     private void updateCandidate(Candidate candidate) {
         try (Connection connection = pool.getConnection();
-             PreparedStatement st = connection.prepareStatement("UPDATE candidates SET name = ?, photoid = ? WHERE id =  ?")) {
-            st.setString(1, candidate.getName());
-            st.setString(2, candidate.getPhotoId());
-            st.setInt(3, candidate.getId());
-            st.executeUpdate();
+             PreparedStatement ps = connection.prepareStatement("UPDATE candidates SET name = ?, lastName = ?, country = ?, region = ?, city = ?, sex = ?, description = ?, photoid = ? "
+                     + "WHERE id =  ?")) {
+            ps.setString(1, candidate.getName());
+            ps.setString(2, candidate.getLastName());
+            ps.setString(3, candidate.getCountry());
+            ps.setString(4, candidate.getRegion());
+            ps.setString(5, candidate.getCity());
+            ps.setString(6, candidate.getSex());
+            ps.setString(7, candidate.getDescription());
+            ps.setString(8, candidate.getPhotoId());
+            ps.setInt(9, candidate.getId());
+            ps.executeUpdate();
         } catch (SQLException e) {
             LOG.error(e.getMessage(), e);
         }
@@ -182,7 +205,7 @@ public class PsqlStore implements Store {
 
     @Override
     public Candidate findCandidateById(int id) {
-        Candidate candidate = new Candidate(0, "", "");
+        Candidate candidate = new Candidate(0, "", "", "", "", "", "", "", "");
         try (Connection cn = pool.getConnection();
              PreparedStatement st = cn.prepareStatement("SELECT * FROM candidates WHERE id = ?")
         ) {
@@ -191,6 +214,12 @@ public class PsqlStore implements Store {
                 while (it.next()) {
                     candidate.setId(it.getInt("id"));
                     candidate.setName(it.getString("name"));
+                    candidate.setLastName(it.getString("lastName"));
+                    candidate.setCountry(it.getString("country"));
+                    candidate.setRegion(it.getString("region"));
+                    candidate.setCity(it.getString("city"));
+                    candidate.setSex(it.getString("sex"));
+                    candidate.setDescription(it.getString("description"));
                     candidate.setPhotoId(it.getString("photoId"));
                 }
             }
@@ -221,7 +250,17 @@ public class PsqlStore implements Store {
 
     @Override
     public void deleteCandidate(String id) {
-
+        File file = new File("images" + File.separator + id);
+        if (file.exists() && !file.isDirectory()) {
+            file.delete();
+        }
+        try (Connection connection = pool.getConnection();
+             PreparedStatement st = connection.prepareStatement("DELETE FROM candidates WHERE id =  ?")) {
+            st.setInt(1, Integer.parseInt(id));
+            st.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 
     @Override
@@ -262,5 +301,60 @@ public class PsqlStore implements Store {
             LOG.error(e.getMessage(), e);
         }
         return user;
+    }
+
+    @Override
+    public Map<Integer, String> findAllCountries() {
+        Map<Integer, String> countries = new LinkedHashMap<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("SELECT id, name FROM country ORDER BY id LIMIT 10")
+        ) {
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    countries.put(it.getInt("id"), it.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return countries;
+    }
+
+    @Override
+    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
+        Map<Integer, String> regions = new LinkedHashMap<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("SELECT * FROM region WHERE country_id = ? ORDER BY id LIMIT 10 ")
+        ) {
+            ps.setInt(1, Integer.parseInt(countryId));
+            ps.execute();
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    regions.put(it.getInt("id"), it.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return regions;
+    }
+
+    @Override
+    public Map<Integer, String> findAllCitiesById(String regionId) {
+        Map<Integer, String> cities = new LinkedHashMap<>();
+        try (Connection cn = pool.getConnection();
+             PreparedStatement ps = cn.prepareStatement("SELECT * FROM city WHERE region_id = ? ORDER BY id LIMIT 10 ")
+        ) {
+            ps.setInt(1, Integer.parseInt(regionId));
+            ps.execute();
+            try (ResultSet it = ps.executeQuery()) {
+                while (it.next()) {
+                    cities.put(it.getInt("id"), it.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return cities;
     }
 }
