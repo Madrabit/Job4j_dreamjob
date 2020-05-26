@@ -2,6 +2,7 @@ package ru.job4j.dream.servlet;
 
 import com.google.gson.Gson;
 import org.json.JSONObject;
+import ru.job4j.dream.store.CandidateStore;
 import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletException;
@@ -31,7 +32,7 @@ public class CitiesAjax extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        Map<Integer, String> countriesList = PsqlStore.instOf().findAllCountries();
+        Map<Integer, String> countriesList = CandidateStore.instOf().findAllCountries();
         Map<Integer, String> regionsList = null;
         Map<Integer, String> cityList = null;
         String jb;
@@ -42,11 +43,11 @@ public class CitiesAjax extends HttpServlet {
             JSONObject jObj = new JSONObject(jb);
             String countryId = (String) jObj.get("country");
             if (countryId != null) {
-                regionsList = PsqlStore.instOf().findAllRegionsByCountryId(countryId);
+                regionsList = CandidateStore.instOf().findAllRegionsByCountryId(countryId);
             }
             if (jObj.has("region")) {
                 String regionId = (String) jObj.get("region");
-                cityList = PsqlStore.instOf().findAllCitiesById(regionId);
+                cityList = CandidateStore.instOf().findAllCitiesById(regionId);
             }
         }
         CitiesAjax.JsonObj jsonObj = new CitiesAjax.JsonObj(countriesList, regionsList, cityList);

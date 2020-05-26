@@ -20,8 +20,8 @@ public class PsqlMain {
 
         Store store = PsqlStore.instOf();
 
-        Map<Integer, String> map = store.findAllCountries();
-        map.forEach((key, value) -> System.out.println(key + " : " + value));
+//        Map<Integer, String> map = store.findAllCountries();
+//        map.forEach((key, value) -> System.out.println(key + " : " + value));
 
         store.savePost(new Post(0, "Java Job"));
         store.saveCandidate(new Candidate(0, "First candid", "Last name", "Man", "Some text", "", "", "", "img"));

@@ -1,5 +1,6 @@
 package ru.job4j.dream.store;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
@@ -74,18 +75,23 @@ public class StoreStub implements Store{
         return null;
     }
 
-    @Override
-    public Map<Integer, String> findAllCountries() {
-        return null;
-    }
+//    @Override
+//    public Map<Integer, String> findAllCountries() {
+//        return null;
+//    }
+//
+//    @Override
+//    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
+//        return null;
+//    }
+//
+//    @Override
+//    public Map<Integer, String> findAllCitiesById(String regionId) {
+//        return null;
+//    }
 
     @Override
-    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
-        return null;
-    }
-
-    @Override
-    public Map<Integer, String> findAllCitiesById(String regionId) {
+    public BasicDataSource getPool() {
         return null;
     }
 }

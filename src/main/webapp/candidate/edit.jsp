@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page import="ru.job4j.dream.model.Candidate" %>
 <%@ page import="ru.job4j.dream.store.PsqlStore" %>
+<%@ page import="ru.job4j.dream.store.CandidateStore" %>
 <!doctype html>
 <html lang="en">
 <head>
@@ -28,7 +29,7 @@
     String id = request.getParameter("id");
     Candidate candid = new Candidate(0, "", "", "", "", "", "", "", "");
     if (id != null) {
-        candid = PsqlStore.instOf().findCandidateById(Integer.parseInt(id));
+        candid = CandidateStore.instOf().findCandidateById(Integer.parseInt(id));
     }
 %>
 <div class="container pt-3">
@@ -80,18 +81,30 @@
                     </div>
                     Страна:
                     <select name="country" id="countySel" size="1">
-                        <option value="" selected="selected">Выбрать страну</option>
+                        <% if ("".equals(candid.getCountry())) { %>
+                        <option value="" >Выбрать страну</option>
+                        <% } else { %>
+                        <option value="" ><%=candid.getCountry()%></option>
+                        <% } %>
                     </select>
 
                     <br>
                     <br>
                     Регион: <select name="state" id="stateSel" size="1">
-                    <option value="" selected="selected">Выберите сначала Страну</option>
+                    <% if ("".equals(candid.getRegion())) { %>
+                    <option value="" >Выберите сначала Страну</option>
+                    <% } else { %>
+                    <option value="" ><%=candid.getRegion()%></option>
+                    <% } %>
                 </select>
                     <br>
                     <br>
                     Город: <select name="district" id="districtSel" size="1">
-                    <option value="" selected="selected">Выберите сначала Регион</option>
+                    <% if ("".equals(candid.getCity())) { %>
+                    <option value="" >Выберите сначала Регион</option>
+                    <% } else { %>
+                    <option value="" ><%=candid.getCity()%></option>
+                    <% } %>
                 </select>
                     <div class="form-group">
                         <label for="desc">Описание:</label>
@@ -133,6 +146,11 @@
             let error = document.querySelector('#lastNameInvalid');
             error.classList.remove('hidden');
         }
+        if (isValid) {
+            countySel[countySel.selectedIndex].value = countySel[countySel.selectedIndex].text
+            stateSel[stateSel.selectedIndex].value = stateSel[stateSel.selectedIndex].text
+            districtSel[districtSel.selectedIndex].value = districtSel[districtSel.selectedIndex].text
+        }
         return isValid;
     }
     let form = document.querySelector('form')
@@ -142,28 +160,64 @@
     let countySel = document.getElementById("countySel");
     let stateSel = document.getElementById("stateSel");
     let districtSel = document.getElementById("districtSel");
+    let oldCountry = '<%=candid.getCountry()%>';
+    let oldRegion = '<%=candid.getRegion()%>';
+    let oldCity = '<%=candid.getCity()%>';
 
     window.onload = function () {
 
-
-        fetch('http://localhost:8081/dreamjob/cities',
-            {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+        if (oldCountry != '' && oldRegion != '' && oldCity != '') {
+            fetch('http://localhost:8081/dreamjob/cities',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({country: oldCountry, region: oldRegion})
                 }
-            }
-        ).then(response => response.json())
-            .then(data => {
-                for (let key in data.country) {
-                    countySel.options[countySel.options.length] = new Option(data.country[key], key);
+            ).then(response => response.json())
+                .then(data => {
+                    for (let key in data.country) {
+                        if (oldCountry == data.country[key]) {
+                            countySel.options[countySel.options.length] = new Option(data.country[key], key, true, true);
+                        } else {
+                            countySel.options[countySel.options.length] = new Option(data.country[key], key);
+                        }
+                    }
+                    for (let key in data.region) {
+                        if (oldRegion == key) {
+                            stateSel.options[stateSel.options.length] = new Option(data.region[key], key, true, true);
+                        } else {
+                            stateSel.options[stateSel.options.length] = new Option(data.region[key], key);
+                        }
+                    }
+                    for (let key in data.cities) {
+                        if (oldCity == key) {
+                            districtSel.options[districtSel.options.length] = new Option(data.cities[key], key, true, true);
+                        } else {
+                            districtSel.options[districtSel.options.length] = new Option(data.cities[key], key);
+                        }
+                    }
+                }).catch(error => console.error(error))
+        } else {
+            fetch('http://localhost:8081/dreamjob/cities',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
                 }
-            })
-            .catch(error => console.error(error))
-
-
+            ).then(response => response.json())
+                .then(data => {
+                    for (let key in data.country) {
+                            countySel.options[countySel.options.length] = new Option(data.country[key], key);
+                    }
+                }).catch(error => console.error(error))
+        }
     }
+
 
     countySel.onchange = function () {
         let value = countySel.options[countySel.selectedIndex].value;
@@ -178,7 +232,6 @@
             }
         ).then(response => response.json())
             .then(data => {
-                console.log(data)
                 for (let key in data.regions) {
                     stateSel.options[stateSel.options.length] = new Option(data.regions[key], key);
                 }

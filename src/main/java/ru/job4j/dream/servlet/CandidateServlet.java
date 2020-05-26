@@ -5,6 +5,7 @@ import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import ru.job4j.dream.model.Candidate;
+import ru.job4j.dream.store.CandidateStore;
 import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletContext;
@@ -27,7 +28,7 @@ public class CandidateServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setCharacterEncoding("UTF-8");
         resp.setCharacterEncoding("UTF-8");
-        req.setAttribute("candidates", PsqlStore.instOf().findAllCandidates());
+        req.setAttribute("candidates", CandidateStore.instOf().findAllCandidates());
         req.getRequestDispatcher("candidates.jsp").forward(req, resp);
     }
 
@@ -93,7 +94,7 @@ public class CandidateServlet extends HttpServlet {
         } catch (FileUploadException e) {
             e.printStackTrace();
         }
-        PsqlStore.instOf().saveCandidate(
+        CandidateStore.instOf().saveCandidate(
                 new Candidate(
                         Integer.parseInt(req.getParameter("id")),
                         name,

@@ -1,5 +1,6 @@
 package ru.job4j.dream.store;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
@@ -31,9 +32,11 @@ public interface Store {
 
     User findByEmail(String name);
 
-    Map<Integer, String>  findAllCountries();
-
-    Map<Integer, String>  findAllRegionsByCountryId(String countryId);
-
-    Map<Integer, String> findAllCitiesById(String regionId);
+    BasicDataSource getPool();
+//
+//    Map<Integer, String>  findAllCountries();
+//
+//    Map<Integer, String>  findAllRegionsByCountryId(String countryId);
+//
+//    Map<Integer, String> findAllCitiesById(String regionId);
 }

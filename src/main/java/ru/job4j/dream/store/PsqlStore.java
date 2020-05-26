@@ -24,8 +24,11 @@ public class PsqlStore implements Store {
 
     private static final BasicDataSource pool = new BasicDataSource();
 
+    public BasicDataSource getPool() {
+        return pool;
+    }
 
-    private PsqlStore() {
+    PsqlStore() {
         Properties cfg = new Properties();
         try (BufferedReader io = new BufferedReader(
                 new FileReader("db.properties")
@@ -303,58 +306,58 @@ public class PsqlStore implements Store {
         return user;
     }
 
-    @Override
-    public Map<Integer, String> findAllCountries() {
-        Map<Integer, String> countries = new LinkedHashMap<>();
-        try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("SELECT id, name FROM country ORDER BY id LIMIT 10")
-        ) {
-            try (ResultSet it = ps.executeQuery()) {
-                while (it.next()) {
-                    countries.put(it.getInt("id"), it.getString("name"));
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return countries;
-    }
-
-    @Override
-    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
-        Map<Integer, String> regions = new LinkedHashMap<>();
-        try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("SELECT * FROM region WHERE country_id = ? ORDER BY id LIMIT 10 ")
-        ) {
-            ps.setInt(1, Integer.parseInt(countryId));
-            ps.execute();
-            try (ResultSet it = ps.executeQuery()) {
-                while (it.next()) {
-                    regions.put(it.getInt("id"), it.getString("name"));
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return regions;
-    }
-
-    @Override
-    public Map<Integer, String> findAllCitiesById(String regionId) {
-        Map<Integer, String> cities = new LinkedHashMap<>();
-        try (Connection cn = pool.getConnection();
-             PreparedStatement ps = cn.prepareStatement("SELECT * FROM city WHERE region_id = ? ORDER BY id LIMIT 10 ")
-        ) {
-            ps.setInt(1, Integer.parseInt(regionId));
-            ps.execute();
-            try (ResultSet it = ps.executeQuery()) {
-                while (it.next()) {
-                    cities.put(it.getInt("id"), it.getString("name"));
-                }
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
-        return cities;
-    }
+//    @Override
+//    public Map<Integer, String> findAllCountries() {
+//        Map<Integer, String> countries = new LinkedHashMap<>();
+//        try (Connection cn = pool.getConnection();
+//             PreparedStatement ps = cn.prepareStatement("SELECT id, name FROM country ORDER BY id LIMIT 10")
+//        ) {
+//            try (ResultSet it = ps.executeQuery()) {
+//                while (it.next()) {
+//                    countries.put(it.getInt("id"), it.getString("name"));
+//                }
+//            }
+//        } catch (Exception e) {
+//            LOG.error(e.getMessage(), e);
+//        }
+//        return countries;
+//    }
+//
+//    @Override
+//    public Map<Integer, String> findAllRegionsByCountryId(String countryId) {
+//        Map<Integer, String> regions = new LinkedHashMap<>();
+//        try (Connection cn = pool.getConnection();
+//             PreparedStatement ps = cn.prepareStatement("SELECT * FROM region WHERE country_id = ? ORDER BY id LIMIT 10 ")
+//        ) {
+//            ps.setInt(1, Integer.parseInt(countryId));
+//            ps.execute();
+//            try (ResultSet it = ps.executeQuery()) {
+//                while (it.next()) {
+//                    regions.put(it.getInt("id"), it.getString("name"));
+//                }
+//            }
+//        } catch (Exception e) {
+//            LOG.error(e.getMessage(), e);
+//        }
+//        return regions;
+//    }
+//
+//    @Override
+//    public Map<Integer, String> findAllCitiesById(String regionId) {
+//        Map<Integer, String> cities = new LinkedHashMap<>();
+//        try (Connection cn = pool.getConnection();
+//             PreparedStatement ps = cn.prepareStatement("SELECT * FROM city WHERE region_id = ? ORDER BY id LIMIT 10 ")
+//        ) {
+//            ps.setInt(1, Integer.parseInt(regionId));
+//            ps.execute();
+//            try (ResultSet it = ps.executeQuery()) {
+//                while (it.next()) {
+//                    cities.put(it.getInt("id"), it.getString("name"));
+//                }
+//            }
+//        } catch (Exception e) {
+//            LOG.error(e.getMessage(), e);
+//        }
+//        return cities;
+//    }
 }

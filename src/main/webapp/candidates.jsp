@@ -38,7 +38,7 @@
                         <th scope="col">Имя</th>
                         <th scope="col">Фамилия</th>
                         <th scope="col">Пол</th>
-                        <th scope="col">Описание</th>
+                        <th scope="col">Город</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -57,8 +57,6 @@
                                 <c:out value="${candidate.sex}"/>
                             </td>
                             <td>
-                                <c:out value="${candidate.country}"/>
-                                <c:out value="${candidate.region}"/>
                                 <c:out value="${candidate.city}"/>
                             </td>
                             <td>
@@ -86,5 +84,6 @@
         </div>
     </div>
 </div>
+
 </body>
 </html>
