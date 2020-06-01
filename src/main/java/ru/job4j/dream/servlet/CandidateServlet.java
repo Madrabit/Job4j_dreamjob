@@ -6,7 +6,6 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import ru.job4j.dream.model.Candidate;
 import ru.job4j.dream.store.CandidateStore;
-import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

@@ -18,54 +18,49 @@ public class StoreStub implements Store{
     private final Map<Integer, User> userMap = new HashMap<>();
 
     private int postIds = 0;
-    private int candidatesIds = 0;
+    private final int candidatesIds = 0;
     private final int usersId = 0;
 
 
-    @Override
     public Collection<Post> findAllPosts() {
         return new ArrayList<>(postMap.values());
     }
 
-    @Override
-    public Collection<Candidate> findAllCandidates() {
-        return new ArrayList<>(candidateMap.values());
-    }
+//    @Override
+//    public Collection<Candidate> findAllCandidates() {
+//        return new ArrayList<>(candidateMap.values());
+//    }
 
-    @Override
     public void savePost(Post post) {
         post.setId(postIds++);
         this.postMap.put(post.getId(), post);
     }
 
-    @Override
-    public void saveCandidate(Candidate candidate) {
-        candidate.setId(this.candidatesIds++);
-        this.candidateMap.put(candidate.getId(), candidate);
-    }
+//    @Override
+//    public void saveCandidate(Candidate candidate) {
+//        candidate.setId(this.candidatesIds++);
+//        this.candidateMap.put(candidate.getId(), candidate);
+//    }
 
-    @Override
-    public Candidate findCandidateById(int id) {
-        return candidateMap.get(id);
-    }
+//    @Override
+//    public Candidate findCandidateById(int id) {
+//        return candidateMap.get(id);
+//    }
 
-    @Override
     public Post findPostById(int id) {
         return postMap.get(id);
     }
 
-    @Override
-    public void deleteCandidate(String id) {
-        candidateMap.remove(id);
-    }
+//    @Override
+//    public void deleteCandidate(String id) {
+//        candidateMap.remove(id);
+//    }
 
-    @Override
     public void addUser(User user) {
         user.setId(postIds++);
         this.userMap.put(user.getId(), user);
     }
 
-    @Override
     public User findByEmail(String name) {
         for (User user : userMap.values()) {
             if (name.equals(user.getEmail())) {
@@ -90,7 +85,6 @@ public class StoreStub implements Store{
 //        return null;
 //    }
 
-    @Override
     public BasicDataSource getPool() {
         return null;
     }

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.job4j.dream.model.Candidate;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -183,6 +184,20 @@ public class CandidateStore  {
             LOG.error(e.getMessage(), e);
         }
         return cities;
+    }
+
+    public void deleteCandidate(String id) {
+        File file = new File("images" + File.separator + id);
+        if (file.exists() && !file.isDirectory()) {
+            file.delete();
+        }
+        try (Connection connection = psqlStore.getPool().getConnection();
+             PreparedStatement st = connection.prepareStatement("DELETE FROM candidates WHERE id =  ?")) {
+            st.setInt(1, Integer.parseInt(id));
+            st.executeUpdate();
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 
 }

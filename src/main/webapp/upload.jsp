@@ -23,7 +23,7 @@
         </thead>
         <tbody>
         <c:forEach items="${images}" var="image" varStatus="status">
-            <tr valign="top">
+            <tr align="top">
                 <td><a href="${pageContext.servletContext.contextPath}/download?photoId=${image}">Download</a></td>
                 <td>
                     <img src="${pageContext.servletContext.contextPath}/download?photoId=${image}" width="100px" height="100px"

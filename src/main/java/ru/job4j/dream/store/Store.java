@@ -1,12 +1,7 @@
 package ru.job4j.dream.store;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import ru.job4j.dream.model.Candidate;
-import ru.job4j.dream.model.Post;
 import ru.job4j.dream.model.User;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * @author madrabit on 30.04.2020
@@ -14,19 +9,19 @@ import java.util.Map;
  * @since 0.1
  */
 public interface Store {
-    Collection<Post> findAllPosts();
+//    Collection<Post> findAllPosts();
 
-    Collection<Candidate> findAllCandidates();
+//    Collection<Candidate> findAllCandidates();
 
-    void savePost(Post post);
+//    void savePost(Post post);
 
-    void saveCandidate(Candidate candidate);
+//    void saveCandidate(Candidate candidate);
 
-    Candidate findCandidateById(int id);
+//    Candidate findCandidateById(int id);
 
-    Post findPostById(int id);
+//    Post findPostById(int id);
 
-    void deleteCandidate(String id);
+//    void deleteCandidate(String id);
 
     void addUser(User user);
 

@@ -3,7 +3,6 @@ package ru.job4j.dream.servlet;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 import ru.job4j.dream.store.CandidateStore;
-import ru.job4j.dream.store.PsqlStore;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

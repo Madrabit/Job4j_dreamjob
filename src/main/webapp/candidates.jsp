@@ -39,6 +39,8 @@
                         <th scope="col">Фамилия</th>
                         <th scope="col">Пол</th>
                         <th scope="col">Город</th>
+                        <th scope="col">Описание</th>
+                        <th scope="col">Фото</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -62,14 +64,10 @@
                             <td>
                                 <c:out value="${candidate.description}"/>
                             </td>
-                            <td>
+                            <td class="d-flex justify-content-between align-items-center">
                                 <a href="${pageContext.servletContext.contextPath}/download?photoId=${candidate.photoId}">Download</a>
-                            </td>
-                            <td>
                                 <img src="${pageContext.servletContext.contextPath}/download?photoId=${candidate.photoId}"
                                      width="100px" height="100px" alt="candidate_photo"/>
-                            </td>
-                            <td>
                                 <a href="${pageContext.servletContext.contextPath}/delete?id=${candidate.id}">
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fa fa-trash mr-3"></i>

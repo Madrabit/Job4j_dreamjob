@@ -10,6 +10,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import ru.job4j.dream.model.Post;
 import ru.job4j.dream.servlet.PostServlet;
 import ru.job4j.dream.servlet.RegServlet;
+import ru.job4j.dream.store.PostStore;
 import ru.job4j.dream.store.PsqlStore;
 import ru.job4j.dream.store.Store;
 import ru.job4j.dream.store.StoreStub;
@@ -46,9 +47,9 @@ public class PsqlStoreTest {
         when(req.getParameter("id")).thenReturn("0");
         when(req.getParameter("name")).thenReturn("Vasya");
         new PostServlet().doPost(req, resp);
-        List<Post> postList = new ArrayList<>(PsqlStore.instOf().findAllPosts());
+        List<Post> postList = new ArrayList<>(PostStore.instOf().findAllPosts());
         assertThat(postList.get(0).getName(), is("Vasya"));
-        assertThat(PsqlStore.instOf().findPostById(0).getName(), is("Vasya"));
+        assertThat(PostStore.instOf().findPostById(0).getName(), is("Vasya"));
     }
 
     @Test
